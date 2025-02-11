@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supos_v3/core/supabase/supabase_services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supos_v3/core/supabase/supabase_service.dart';
 import 'app/app.dart';
+import 'modules/auth/bloc/auth_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -8,6 +10,7 @@ void main() async {
   // Initialize Supabase
   await SupabaseService.initializeSupabase();
 
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (context) => AuthBloc()), // Provide AuthBloc globally
+  ], child: const MyApp()));
 }
-
