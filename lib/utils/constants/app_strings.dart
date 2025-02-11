@@ -25,12 +25,17 @@ class AppStrings {
   static const String email = 'Email';
   static const String pleaseEnterEmailAddress = 'Please, Enter Email Address';
   static const String invalidEmailAddress = 'Invalid Email Address';
+  static const String emailRequired = 'Email is required';
+  static const String emailRegexp = r'^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,4}$';
 
   static const String password = 'Password';
+  static const String passwordRequired = 'Password is required';
+  static const String passwordIsShort = 'Password should be at least 6 characters long';
   static const String pleaseEnterPassword = 'Please, Enter Password';
   static const String invalidPassword = 'Invalid Password';
 
   static const String confirmPassword = 'Confirm Password';
+  static const String confirmPasswordRequired = 'Confirm password is required';
   static const String pleaseReEnterPassword = 'Please, Re-Enter Password';
   static const String passwordNotMatched = 'Password not matched!';
 }
