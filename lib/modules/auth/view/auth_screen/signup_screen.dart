@@ -4,10 +4,15 @@ import 'package:supos_v3/utils/constants/app_strings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supos_v3/utils/helpers/form_validators.dart.dart';
 
+import '../../../../utils/constants/app_sizes.dart';
+import '../../../../utils/shared_components/component_styles.dart';
+
 class SignupScreen extends StatefulWidget {
   final VoidCallback onToggle;
+  final VoidCallback onWelcome;
 
-  SignupScreen({super.key, required this.onToggle});
+  const SignupScreen(
+      {super.key, required this.onToggle, required this.onWelcome});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -24,55 +29,73 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(AppStrings.register, style: TextStyle(fontSize: 24)),
-            const SizedBox(height: 20),
-            TextFormField(
-              decoration: const InputDecoration(labelText: AppStrings.email),
-              controller: emailController,
-              validator: FormValidators.validateEmail,
+    return Center(
+      child: SizedBox(
+        width: AppSizes.defaultContainerWidth,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(AppStrings.register, style: headingTextStyle(),),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: textFieldDecoration(AppStrings.email),
+                  controller: emailController,
+                  validator: FormValidators.validateEmail,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration: textFieldDecoration(AppStrings.password),
+                  obscureText: true,
+                  controller: passwordController,
+                  validator: FormValidators.validatePassword,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration: textFieldDecoration(AppStrings.confirmPassword),
+                  obscureText: true,
+                  controller: confirmPasswordController,
+                  validator: (value) => FormValidators.validateConfirmPassword(
+                      value, passwordController.text),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: primaryButtonStyle(context, true),
+                      onPressed: widget.onWelcome,
+                      child: const Text(AppStrings.cancel),
+                    ),
+                    ElevatedButton(
+                      style: secondaryButtonStyle(context, true),
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          // Form is valid, submit data
+                          context.read<AuthBloc>().add(
+                                SignupRequested(emailController.text,
+                                    passwordController.text),
+                              );
+                        }
+                      },
+                      child: const Text(AppStrings.register),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: widget.onToggle,
+                  child: Text(
+                    AppStrings.iHaveAnAccount,
+                    style: normalTextButtonStyle(),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            TextFormField(
-              decoration: const InputDecoration(labelText: AppStrings.password),
-              obscureText: true,
-              controller: passwordController,
-              validator: FormValidators.validatePassword,
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              decoration:
-                  const InputDecoration(labelText: AppStrings.confirmPassword),
-              obscureText: true,
-              controller: confirmPasswordController,
-              validator: (value) => FormValidators.validateConfirmPassword(
-                  value, passwordController.text),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  // Form is valid, submit data
-                  context.read<AuthBloc>().add(
-                        SignupRequested(
-                            emailController.text, passwordController.text),
-                      );
-                }
-              },
-              child: const Text(AppStrings.register),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: widget.onToggle,
-              child: const Text(AppStrings.iHaveAnAccount),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supos_v3/app/home.dart';
+import 'package:supos_v3/utils/constants/app_colors.dart';
 import '../core/supabase/auth_service.dart';
 import '../modules/auth/view/auth_page.dart';
 import '../modules/auth/bloc/auth_bloc.dart';
+import '../modules/auth/view/auth_screen/signin_screen.dart';
+import '../modules/auth/view/auth_screen/signup_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -42,11 +45,9 @@ class MyAppState extends State<MyApp> {
         ),
         GoRoute(
           path: '/home',
-          builder: (context, state) {
-            return HomeScreen(
-              userName: 'Elias',
-            );
-          },
+          builder: (context, state) => const HomeScreen(
+            userName: 'Elias',
+          ),
         ),
       ],
     );
@@ -77,14 +78,16 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     if (!_sessionChecked) {
       return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(body: Center(child: CircularProgressIndicator())));
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      );
     }
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+          primarySwatch: AppColors.primarySwatch, fontFamily: 'Roboto'),
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
