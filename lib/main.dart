@@ -11,6 +11,8 @@ void main() async {
   await SupabaseService.initializeSupabase();
 
   runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (context) => AuthBloc()), // Provide AuthBloc globally
-  ], child: const MyApp()));
+    BlocProvider(
+        create: (context) =>
+            AuthBloc()..add(AppStarted())), // Provide AuthBloc globally
+  ], child: MyApp()));
 }

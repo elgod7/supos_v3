@@ -1,105 +1,55 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supos_v3/app/home.dart';
-import 'package:supos_v3/utils/constants/app_colors.dart';
-import '../core/supabase/auth_service.dart';
-import '../modules/auth/view/auth_page.dart';
+import '../app/home.dart';
 import '../modules/auth/bloc/auth_bloc.dart';
-import '../modules/auth/view/auth_screen/signin_screen.dart';
-import '../modules/auth/view/auth_screen/signup_screen.dart';
+import '../modules/auth/view/auth_page.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
-  MyAppState createState() => MyAppState();
-}
+  Widget build(BuildContext context) {
+    final authBloc = context.watch<AuthBloc>();
 
-class MyAppState extends State<MyApp> {
-  final AuthService _authService = AuthService();
-  bool _sessionChecked = false;
-  late final GoRouter _router;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeRouter();
-    _checkSession();
-  }
-
-  void _initializeRouter() {
-    _router = GoRouter(
+    final GoRouter _router = GoRouter(
+      refreshListenable: GoRouterRefreshStream(
+          authBloc.stream), // Auto-refresh GoRouter when Bloc state changes
       initialLocation: '/',
       redirect: (context, state) {
-        final isLoggingIn = state.uri.toString() == '/';
-        final isLoggedIn = context.read<AuthBloc>().state is AuthAuthenticated;
-        if (!isLoggedIn && !isLoggingIn) return '/';
-        if (isLoggedIn && isLoggingIn) return '/home';
+        final isAuthenticated = authBloc.state is AuthAuthenticated;
+        //final isLoggingIn = state.matchedLocation == '/';
+        if (!isAuthenticated) return '/';
+        if (isAuthenticated) return '/home';
         return null;
       },
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => const AuthPage(key: Key('auth_page')),
-        ),
+        GoRoute(path: '/', builder: (context, state) => const AuthPage()),
         GoRoute(
           path: '/home',
-          builder: (context, state) => const HomeScreen(
-            userName: 'Elias',
-          ),
+          builder: (context, state) => const HomeScreen(userName: 'Elias'),
         ),
       ],
     );
-  }
-
-  Future<void> _checkSession() async {
-    bool isLoggedIn;
-    try {
-      isLoggedIn = await _authService.restoreSession();
-    } catch (e) {
-      debugPrint('Session restoration error: $e');
-      isLoggedIn = false;
-    }
-
-    if (mounted) {
-      setState(() {
-        _sessionChecked = true;
-        if (isLoggedIn) {
-          context.read<AuthBloc>().add(AppStarted());
-        } else {
-          context.read<AuthBloc>().add(LogoutRequested());
-        }
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_sessionChecked) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      );
-    }
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
-      theme: ThemeData(
-          primarySwatch: AppColors.primarySwatch, fontFamily: 'Roboto'),
-      builder: (context, child) {
-        return BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthUnauthenticated) {
-              GoRouter.of(context).go('/');
-            } else if (state is AuthAuthenticated) {
-              GoRouter.of(context).go('/home');
-            }
-          },
-          child: child,
-        );
-      },
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
     );
+  }
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  late final StreamSubscription _subscription;
+
+  GoRouterRefreshStream(Stream stream) {
+    _subscription = stream.listen((_) => notifyListeners());
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }
