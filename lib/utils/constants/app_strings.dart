@@ -19,9 +19,11 @@ class AppStrings {
   static const String loggedIn = 'Logged In!';
   static const String registrationComplete = 'Registration Complete!';
 
-  static const String name = 'Name';
-  static const String pleaseEnterName = 'Please, Enter Name';
+  static const String name = 'Full Name';
+  static const String pleaseEnterName = 'Please, Enter Full Name';
   static const String invalidName = 'Invalid Name';
+  static const String nameRegexp =
+      r'^[A-Z][a-zA-Z]{3,}(?: [A-Z][a-zA-Z]*){0,2}$';
 
   static const String email = 'Email';
   static const String pleaseEnterEmailAddress = 'Please, Enter Email Address';

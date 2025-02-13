@@ -2,6 +2,19 @@ import 'package:supos_v3/utils/constants/app_strings.dart';
 
 class FormValidators {
   // Email validator
+  static String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.pleaseEnterName;
+    }
+    final nameRegex =
+        RegExp(AppStrings.nameRegexp, caseSensitive: false, multiLine: false);
+    if (!nameRegex.hasMatch(value)) {
+      return AppStrings.invalidName;
+    }
+    return null;
+  }
+
+  // Email validator
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return AppStrings.emailRequired;

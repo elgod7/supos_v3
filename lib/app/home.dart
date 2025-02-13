@@ -30,9 +30,16 @@ class HomeScreen extends StatelessWidget {
               context.go('/'); // Redirect to login screen when logged out
             }
           },
-          child: Center(
-            child: Text('Welcome $userName'),
-          ),
+          child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+            if (state is AuthAuthenticated) {
+              return Center(
+                child: Text('Welcome ${state.fullName}'),
+              );
+            }
+            return Center(
+              child: Text('Welcome'),
+            );
+          }),
         ));
   }
 }

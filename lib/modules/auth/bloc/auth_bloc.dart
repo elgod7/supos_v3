@@ -15,8 +15,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       try {
         final isLoggedIn = await _authService.restoreSession();
+        final authUserId = _authService.currentUserId.toString();
         if (isLoggedIn) {
-          emit(AuthAuthenticated());
+          final fullName = await _authService.getUserFullName(authUserId);
+          emit(AuthAuthenticated(fullName));
         } else {
           emit(AuthUnauthenticated());
         }
@@ -31,7 +33,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         // Attempt to log in with the provided email and password.
         await _authService.signIn(event.email, event.password);
-        emit(AuthAuthenticated());
+        final fullName = await _authService.getUserFullName(_authService.currentUserId);
+        emit(AuthAuthenticated(fullName));
       } catch (e) {
         // Emit [AuthError] if an exception occurs.
         emit(AuthError(e.toString()));
@@ -43,11 +46,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       try {
         // Attempt to sign up with the provided email and password.
-        await _authService.signUp(event.email, event.password);
-        emit(AuthAuthenticated());
+        // Sign up the user with Supabase auth
+        final response = await _authService.signUp(event.email, event.password);
+
+        if (response.user != null) {
+          // Insert the full name into the 'users' table
+          await _authService.addUserProfile(response.user!.id, event.fullName);
+          final fullName =
+              await _authService.getUserFullName(response.user!.id);
+
+          emit(AuthAuthenticated(
+              fullName)); // Pass the full name to the Authenticated state
+        }
       } catch (e) {
         // Emit [AuthError] if an exception occurs.
-        emit(AuthError(e.toString()));
+        emit(AuthError('Signup failed: $e'));
       }
     });
 

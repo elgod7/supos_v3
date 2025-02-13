@@ -20,6 +20,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
@@ -39,7 +40,16 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(AppStrings.register, style: headingTextStyle(),),
+                Text(
+                  AppStrings.register,
+                  style: headingTextStyle(),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: textFieldDecoration(AppStrings.name),
+                  controller: fullNameController,
+                  validator: FormValidators.validateName,
+                ),
                 const SizedBox(height: 20),
                 TextFormField(
                   decoration: textFieldDecoration(AppStrings.email),
@@ -76,7 +86,9 @@ class _SignupScreenState extends State<SignupScreen> {
                         if (_formKey.currentState?.validate() ?? false) {
                           // Form is valid, submit data
                           context.read<AuthBloc>().add(
-                                SignupRequested(emailController.text,
+                                SignupRequested(
+                                    fullNameController.text,
+                                    emailController.text,
                                     passwordController.text),
                               );
                         }

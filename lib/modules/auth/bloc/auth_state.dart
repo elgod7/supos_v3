@@ -7,7 +7,6 @@ abstract class AuthState extends Equatable {
   List<Object> get props => [];
 }
 
-
 /// Initial state before any authentication action has taken place.
 class AuthInitial extends AuthState {}
 
@@ -15,7 +14,15 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 /// State when the user is successfully authenticated (logged in).
-class AuthAuthenticated extends AuthState {}
+class AuthAuthenticated extends AuthState {
+  final String fullName;
+
+  /// Constructor that takes the user's [fullName] as a parameter.
+  AuthAuthenticated(this.fullName);
+
+  @override
+  List<Object> get props => [fullName];
+}
 
 /// State when the user is not authenticated (logged out or session expired).
 class AuthUnauthenticated extends AuthState {}

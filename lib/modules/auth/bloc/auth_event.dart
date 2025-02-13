@@ -18,6 +18,7 @@ class LoginRequested extends AuthEvent {
   @override
   List<Object> get props => [email, password];
 }
+
 /// Event triggered when the app starts to check the user's session.
 class AppStarted extends AuthEvent {}
 
@@ -25,9 +26,10 @@ class AppStarted extends AuthEvent {}
 class SignupRequested extends AuthEvent {
   final String email;
   final String password;
+  final String fullName;
 
   /// Constructor that takes [email] and [password] as parameters.
-  SignupRequested(this.email, this.password);
+  SignupRequested(this.fullName, this.email, this.password);
 
   @override
   List<Object> get props => [email, password];

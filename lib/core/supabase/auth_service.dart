@@ -39,15 +39,40 @@ class AuthService {
   }
 
   /// Sign up with email and password
-  Future<void> signUp(String email, String password) async {
+  Future<AuthResponse> signUp(String email, String password) async {
     try {
       final response =
           await _supabase.auth.signUp(email: email, password: password);
       if (response.user == null) {
         throw Exception('Signup failed. Please try again.');
       }
+      return response;
     } catch (e) {
       throw Exception('Failed to sign up: ${e.toString()}');
+    }
+  }
+
+  Future<void> addUserProfile(String authUserId, String fullName) async {
+    try {
+      await _supabase.from('users').insert({
+        'auth_user_id': authUserId,
+        'full_name': fullName,
+      });
+    } catch (e) {
+      throw Exception('Failed to insert user profile: ${e.toString()}');
+    }
+  }
+
+  Future<String> getUserFullName(String authUserId) async {
+    try {
+      final response = await _supabase
+          .from('users')
+          .select('full_name')
+          .eq('auth_user_id', authUserId)
+          .single();
+      return response['full_name'];
+    } catch (e) {
+      throw Exception('Failed to fetch full name: ${e.toString()}');
     }
   }
 
@@ -66,4 +91,6 @@ class AuthService {
       return event.event == AuthChangeEvent.signedIn;
     });
   }
+
+  String get currentUserId => _supabase.auth.currentUser!.id;
 }

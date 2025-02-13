@@ -55,8 +55,8 @@ class _AuthPageState extends State<AuthPage> {
               AppSizes.defaultVerticalSpace,
               Lottie.asset(
                 'assets/animation/login_animation.json',
-                width: 300,
-                height: 300,
+                width: 200,
+                height: 200,
                 animate: false,
               ),
               //AppSizes.defaultVerticalSpace,
