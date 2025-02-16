@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:supos_v3/utils/constants/app_colors.dart';
 import 'package:supos_v3/utils/constants/app_sizes.dart';
 
-ButtonStyle primaryButtonStyle(BuildContext context, bool isSmall) =>
+import '../constants/type.dart';
+
+ButtonStyle primaryButtonStyle(
+        {required BuildContext context, required SizeOption size}) =>
     ButtonStyle(
       backgroundColor: WidgetStateProperty.all<Color>(AppColors.primaryColor),
       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),
       maximumSize: WidgetStateProperty.all<Size>(
-          AppSizes.maximumButtonSize(context, isSmall)),
+          AppSizes.maximumButtonSize(context, size)),
       minimumSize: WidgetStateProperty.all<Size>(
-          AppSizes.minimumButtonSize(context, isSmall)),
+          AppSizes.minimumButtonSize(context, size)),
       fixedSize: WidgetStateProperty.all<Size>(
-          AppSizes.defaultButtonSize(context, isSmall)),
+          AppSizes.defaultButtonSize(context, size)),
       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.defaultBorderRadius),
@@ -28,18 +31,19 @@ ButtonStyle primaryButtonStyle(BuildContext context, bool isSmall) =>
       ),
     );
 
-ButtonStyle secondaryButtonStyle(BuildContext context, bool isSmall) =>
+ButtonStyle secondaryButtonStyle(
+        {required BuildContext context, required SizeOption size}) =>
     ButtonStyle(
       backgroundColor: WidgetStateProperty.all<Color>(AppColors.lightColor),
       side: WidgetStateProperty.all<BorderSide>(
         const BorderSide(color: AppColors.primaryColor),
       ),
       maximumSize: WidgetStateProperty.all<Size>(
-          AppSizes.maximumButtonSize(context, isSmall)),
+          AppSizes.maximumButtonSize(context, size)),
       minimumSize: WidgetStateProperty.all<Size>(
-          AppSizes.minimumButtonSize(context, isSmall)),
+          AppSizes.minimumButtonSize(context, size)),
       fixedSize: WidgetStateProperty.all<Size>(
-          AppSizes.defaultButtonSize(context, isSmall)),
+          AppSizes.defaultButtonSize(context, size)),
       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),
@@ -81,7 +85,7 @@ TextStyle normalTextButtonStyle() => TextStyle(
       fontSize: 12,
     );
 
-InputDecoration textFieldDecoration(String label) => InputDecoration(
+InputDecoration textFieldDecoration({required String label}) => InputDecoration(
     border: OutlineInputBorder(
       borderSide: BorderSide(color: AppColors.primaryColor),
       borderRadius: BorderRadius.circular(AppSizes.defaultBorderRadius),

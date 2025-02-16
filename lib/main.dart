@@ -14,5 +14,6 @@ void main() async {
     BlocProvider(
         create: (context) =>
             AuthBloc()..add(AppStarted())), // Provide AuthBloc globally
+    // BlocProvider(create: (context) => ShopBloc(ShopRepository()))
   ], child: MyApp()));
 }

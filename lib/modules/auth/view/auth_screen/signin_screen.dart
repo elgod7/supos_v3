@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supos_v3/utils/constants/app_strings.dart';
+import 'package:supos_v3/utils/constants/type.dart';
 import 'package:supos_v3/utils/helpers/form_validators.dart.dart';
 import 'package:supos_v3/utils/shared_components/component_styles.dart';
 
@@ -34,18 +35,18 @@ class _SigninScreenState extends State<SigninScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(AppStrings.login, style: headingTextStyle()),
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: textFieldDecoration(AppStrings.email),
+                  decoration: textFieldDecoration(label: AppStrings.email),
                   controller: emailController,
                   validator: FormValidators.validateEmail,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  decoration: textFieldDecoration(AppStrings.password),
+                  decoration: textFieldDecoration(label: AppStrings.password),
                   obscureText: true,
                   controller: passwordController,
                   validator: FormValidators.validatePassword,
@@ -55,12 +56,14 @@ class _SigninScreenState extends State<SigninScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      style: secondaryButtonStyle(context, true),
+                      style: secondaryButtonStyle(
+                          context: context, size: SizeOption.medium),
                       onPressed: widget.onWelcome,
                       child: const Text(AppStrings.cancel),
                     ),
                     ElevatedButton(
-                      style: primaryButtonStyle(context, true),
+                      style: primaryButtonStyle(
+                          context: context, size: SizeOption.medium),
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           // Form is valid, submit data

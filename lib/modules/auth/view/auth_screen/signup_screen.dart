@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supos_v3/modules/auth/bloc/auth_bloc.dart';
 import 'package:supos_v3/utils/constants/app_strings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supos_v3/utils/constants/type.dart';
 import 'package:supos_v3/utils/helpers/form_validators.dart.dart';
 
 import '../../../../utils/constants/app_sizes.dart';
@@ -46,26 +47,27 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: textFieldDecoration(AppStrings.name),
+                  decoration: textFieldDecoration(label: AppStrings.name),
                   controller: fullNameController,
                   validator: FormValidators.validateName,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: textFieldDecoration(AppStrings.email),
+                  decoration: textFieldDecoration(label: AppStrings.email),
                   controller: emailController,
                   validator: FormValidators.validateEmail,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  decoration: textFieldDecoration(AppStrings.password),
+                  decoration: textFieldDecoration(label: AppStrings.password),
                   obscureText: true,
                   controller: passwordController,
                   validator: FormValidators.validatePassword,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  decoration: textFieldDecoration(AppStrings.confirmPassword),
+                  decoration:
+                      textFieldDecoration(label: AppStrings.confirmPassword),
                   obscureText: true,
                   controller: confirmPasswordController,
                   validator: (value) => FormValidators.validateConfirmPassword(
@@ -76,12 +78,14 @@ class _SignupScreenState extends State<SignupScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      style: primaryButtonStyle(context, true),
+                      style: secondaryButtonStyle(
+                          context: context, size: SizeOption.medium),
                       onPressed: widget.onWelcome,
                       child: const Text(AppStrings.cancel),
                     ),
                     ElevatedButton(
-                      style: secondaryButtonStyle(context, true),
+                      style: primaryButtonStyle(
+                          context: context, size: SizeOption.medium),
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           // Form is valid, submit data

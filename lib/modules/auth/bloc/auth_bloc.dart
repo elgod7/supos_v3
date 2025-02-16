@@ -23,7 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthUnauthenticated());
         }
       } catch (e) {
-        emit(AuthError('Failed to restore session: ${e.toString()}'));
+        emit(AuthUnauthenticated());
       }
     });
 
@@ -33,7 +33,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         // Attempt to log in with the provided email and password.
         await _authService.signIn(event.email, event.password);
-        final fullName = await _authService.getUserFullName(_authService.currentUserId);
+        final fullName =
+            await _authService.getUserFullName(_authService.currentUserId);
         emit(AuthAuthenticated(fullName));
       } catch (e) {
         // Emit [AuthError] if an exception occurs.

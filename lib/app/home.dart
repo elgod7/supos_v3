@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../modules/auth/bloc/auth_bloc.dart';
+import '../modules/shops/view/shop_page.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/home';
@@ -30,16 +31,29 @@ class HomeScreen extends StatelessWidget {
               context.go('/'); // Redirect to login screen when logged out
             }
           },
-          child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-            if (state is AuthAuthenticated) {
-              return Center(
-                child: Text('Welcome ${state.fullName}'),
-              );
-            }
-            return Center(
-              child: Text('Welcome'),
-            );
-          }),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+                if (state is AuthAuthenticated) {
+                  return Center(
+                    child: Text('Welcome ${state.fullName}'),
+                  );
+                }
+                return Center(
+                  child: Text('Welcome'),
+                );
+              }),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ShopPage()),
+                    );
+                  },
+                  child: Text("Shops"))
+            ],
+          ),
         ));
   }
 }

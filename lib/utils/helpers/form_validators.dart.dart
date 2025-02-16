@@ -1,7 +1,23 @@
 import 'package:supos_v3/utils/constants/app_strings.dart';
 
 class FormValidators {
+  final String? fieldName;
+
+  FormValidators(this.fieldName);
+  //field name is optional
+  //field Name default validator
   // Email validator
+  static String? validateField(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.requiredField;
+    }
+    return null;
+  }
+
+  static String? noValidation(String? value) {
+    return null;
+  }
+
   static String? validateName(String? value) {
     if (value == null || value.isEmpty) {
       return AppStrings.pleaseEnterName;

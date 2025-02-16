@@ -14,13 +14,10 @@ class AuthService {
     try {
       final session = _supabase.auth.currentSession;
       if (session != null) {
-        print('Session restored successfully');
         return true;
       }
-      print('No session found');
       return false;
     } catch (e) {
-      print('Error restoring session: $e');
       return false;
     }
   }

@@ -7,12 +7,13 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Lottie.asset(
-        'assets/animation/login.json',
-        width: 200,
-        height: 200,
-        animate: true,
-      ),
+      child: CircularProgressIndicator(),
+      // child: Lottie.asset(
+      //   'assets/animation/login.json',
+      //   width: 200,
+      //   height: 200,
+      //   animate: true,
+      // ),
     );
   }
 }

@@ -1,6 +1,8 @@
 class AppStrings {
   const AppStrings._();
 
+  
+  static const String requiredField = 'required';
   static const String loginAndRegister = 'Login and Register UI';
   static const String uhOhPageNotFound = 'uh-oh!\nPage not found';
   static const String register = 'Register';
