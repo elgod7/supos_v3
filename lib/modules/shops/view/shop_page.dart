@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supos_v3/modules/shops/view/shop_widgets/show_add_shop_dialog.dart';
 import 'package:supos_v3/utils/helpers/access_helper.dart';
 import '../bloc/shop_bloc.dart';
@@ -74,6 +75,10 @@ class ShopPage extends StatelessWidget {
                                 ),
                               ],
                             ),
+                      onTap: () {
+                        context.push(
+                            '/products/${shop['shops']['id']}?shopName=${shop['shops']['name']}');
+                      },
                     );
                   },
                 );

@@ -7,11 +7,16 @@ import 'package:supos_v3/modules/shops/view/shop_page.dart';
 import '../app/home.dart';
 import '../modules/auth/bloc/auth_bloc.dart';
 import '../modules/auth/view/auth_page.dart';
+import '../modules/products/view/pages/add_product_page.dart';
+import '../modules/products/view/product_page.dart';
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authBloc = context.watch<AuthBloc>();
+    //final shopId = shopBloc.state.shopId;
 
     final GoRouter _router = GoRouter(
       refreshListenable: GoRouterRefreshStream(
@@ -25,7 +30,9 @@ class MyApp extends StatelessWidget {
               ? null
               : '/'; // Redirect to login if not authenticated
         }
-        if (isAuthenticated && isLoggingIn) return '/home';
+        if (isAuthenticated && isLoggingIn) {
+          return '/home';
+        }
         return null;
       },
       routes: [
@@ -35,6 +42,33 @@ class MyApp extends StatelessWidget {
           builder: (context, state) => const HomeScreen(userName: 'Elias'),
         ),
         GoRoute(path: '/shop', builder: (context, state) => const ShopPage()),
+        GoRoute(
+            path: '/products/:shopId', // <-- Define dynamic shopId parameter,
+            builder: (context, state) {
+              final shopId = int.parse(state.pathParameters['shopId']!);
+              final shopName = state.uri.queryParameters['shopName'];
+              return ProductPage(
+                shopId: shopId,
+                shopName: shopName,
+              );
+            }),
+        GoRoute(
+          path: '/products/:shopId/add',
+          builder: (context, state) {
+            final shopId = int.parse(state.pathParameters['shopId']!);
+            return AddProductPage(shopId: shopId, categoryOptions: []);
+          },
+        ),
+        // GoRoute(
+        //   path: '/products/:shopId/edit/:productId',
+        //   builder: (context, state) {
+        //     final shopId = int.parse(state.pathParameters['shopId']!);
+        //     final productId = int.parse(state.pathParameters['productId']!);
+        //     final product =
+        //         state.extra as Map<String, dynamic>; // Pass full product data
+        //     return AddEditProductPage(shopId: shopId, product: product);
+        //   },
+        // ),
       ],
     );
 

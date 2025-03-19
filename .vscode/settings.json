@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["Roboto"]
+  "cSpell.words": ["Roboto"],
+  "cmake.ignoreCMakeListsMissing": true
 }

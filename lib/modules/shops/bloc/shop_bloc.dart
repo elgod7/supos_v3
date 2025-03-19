@@ -37,9 +37,10 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     try {
       await shopRepository.addShop(
           event.name, event.description, event.location);
-      final updatedShops =
-          await shopRepository.fetchUserShops(); // Fetch updated shop list
-      emit(ShopLoaded(updatedShops));
+      // final updatedShops =
+      //     await shopRepository.fetchUserShops(); // Fetch updated shop list
+      add(FetchShops()); // Refresh shop list
+      emit(ShopAdded());
     } catch (e) {
       emit(ShopError('Failed to add shop: $e'));
     }
@@ -64,7 +65,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     }
   }
 
-  Future<void> _onShopsUpdated(ShopsUpdated event, Emitter<ShopState> emit) async {
+  Future<void> _onShopsUpdated(
+      ShopsUpdated event, Emitter<ShopState> emit) async {
     try {
       final updatedShops = await shopRepository.fetchUserShops();
       emit(ShopLoaded(updatedShops));
@@ -72,5 +74,4 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       emit(ShopError('Failed to update shops: $e'));
     }
   }
-  
 }

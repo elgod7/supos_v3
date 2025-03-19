@@ -4,7 +4,7 @@ import 'package:supos_v3/utils/constants/type.dart';
 import '../../constants/app_sizes.dart';
 import '../component_styles.dart';
 
-class ShowFormDialog {
+class AddEditPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final String title;
   final List<TextEditingController> controllers;
@@ -15,7 +15,7 @@ class ShowFormDialog {
   final List<FormFieldValidator<String>>? validators;
   final bool isEdit;
 
-  ShowFormDialog({
+  AddEditPage({
     required this.title,
     required this.controllers,
     required this.labels,
@@ -34,9 +34,79 @@ class ShowFormDialog {
     }
   }
 
-  void show(BuildContext context) {
-    _showAddDialog(context);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [actions(context)],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(controllers.length, (index) {
+                if (dropdownItems != null &&
+                    dropdownItems!.length > index &&
+                    dropdownItems![index].isNotEmpty) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppSizes.defaultVerticalSpace,
+                      Text(
+                        dropdownLabels![index],
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      DropdownButtonFormField<int>(
+                        value: int.tryParse(controllers[index].text),
+                        items: dropdownItems![index].map((item) {
+                          return DropdownMenuItem<int>(
+                            value: item['id'],
+                            child: Text(item['name']),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          controllers[index].text = value.toString();
+                        },
+                        decoration: InputDecoration(
+                            label: Text(dropdownLabels![index])),
+                        validator: isEdit
+                            ? null
+                            : (value) => value == null
+                                ? "Please select ${dropdownLabels![index]}"
+                                : null,
+                      ),
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      AppSizes.defaultVerticalSpace,
+                      TextFormField(
+                        controller: controllers[index],
+                        decoration: InputDecoration(label: Text(labels[index])),
+                        // decoration: textFieldDecoration(label: labels[index]),
+                        validator: isEdit
+                            ? null
+                            : (value) => validators?[index](value),
+                      ),
+                    ],
+                  );
+                }
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
   }
+
+  // void show(BuildContext context) {
+  //   _showAddDialog(context);
+  // }
 
   void _showAddDialog(BuildContext pageContext) {
     showDialog(
@@ -143,6 +213,21 @@ class ShowFormDialog {
           ),
         ],
       ),
+    );
+  }
+
+  Widget actions(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        if (isEdit) {
+          onEvent(context);
+          Navigator.pop(context);
+        } else if (_formKey.currentState?.validate() ?? false) {
+          onEvent(context);
+          Navigator.pop(context);
+        }
+      },
+      icon: Icon(Icons.save),
     );
   }
 }
