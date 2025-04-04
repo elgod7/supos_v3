@@ -14,13 +14,15 @@ class AddProductPage extends StatelessWidget {
   final stockController = TextEditingController();
   final unitController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
+
   final int shopId;
 
-  List<dynamic> categoryOptions; // Store categories
+  final List<dynamic> categoryOptions; // Store categories
 
-  AddProductPage({super.key, required this.shopId, required this.categoryOptions});
+  AddProductPage(
+      {super.key, required this.shopId, required this.categoryOptions});
 
-  List<String? Function(String?)>? validators = [
+  final List<String? Function(String?)>? validators = [
     FormValidators.validateField, // Custom validator for required field
     FormValidators.noValidation, // No validation for description
     FormValidators.validateField,
@@ -72,11 +74,10 @@ class AddProductPage extends StatelessWidget {
           return;
         }
 
-        context.read<ProductBloc>().add(AddProduct(shopId, name,
-            description, categoryId, price, costPrice, stock, unit));
+        context.read<ProductBloc>().add(AddProduct(shopId, name, description,
+            categoryId, price, costPrice, stock, unit));
       },
     );
-  ;
   }
 
   void showErrorDialog(BuildContext context, String message) {

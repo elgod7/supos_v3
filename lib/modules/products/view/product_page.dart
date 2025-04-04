@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/product_bloc.dart';
 import '../data/product_repository.dart';
-import 'pages/add_product_page.dart';
 import 'product_widgets/show_add_product_dialog.dart';
 import 'product_widgets/show_edit_product_dialog.dart';
 
