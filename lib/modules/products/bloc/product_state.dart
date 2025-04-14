@@ -11,11 +11,13 @@ class ProductLoading extends ProductState {}
 
 class ProductLoaded extends ProductState {
   final List<dynamic> products;
+  final List<dynamic> categories;
+  final List<dynamic> units;
 
-  ProductLoaded(this.products);
+  ProductLoaded(this.products, this.categories, this.units);
 
   @override
-  List<Object> get props => [products];
+  List<Object> get props => [products, categories, units];
 }
 
 class ProductAdded extends ProductState {}
@@ -33,6 +35,8 @@ class ProductError extends ProductState {
   List<Object> get props => [message];
 }
 
+class CategoryLoading extends ProductState {}
+
 class CategoryLoaded extends ProductState {
   final List<dynamic> categories;
 
@@ -41,3 +45,20 @@ class CategoryLoaded extends ProductState {
   @override
   List<Object> get props => [categories];
 }
+
+class CategoryEdited extends ProductState {}
+
+class CategoryDeleted extends ProductState {}
+
+class UnitLoaded extends ProductState {
+  final List<dynamic> units;
+
+  UnitLoaded(this.units);
+
+  @override
+  List<Object> get props => [units];
+}
+
+class UnitEdited extends ProductState {}
+
+class UnitDeleted extends ProductState {}

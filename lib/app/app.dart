@@ -7,7 +7,9 @@ import 'package:supos_v3/modules/shops/view/shop_page.dart';
 import '../app/home.dart';
 import '../modules/auth/bloc/auth_bloc.dart';
 import '../modules/auth/view/auth_page.dart';
-import '../modules/products/view/pages/add_product_page.dart';
+import '../modules/products/view/pages/product_add_page.dart';
+import '../modules/products/view/pages/product_detail_page.dart';
+import '../modules/products/view/pages/product_edit_page.dart';
 import '../modules/products/view/product_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -53,12 +55,60 @@ class MyApp extends StatelessWidget {
               );
             }),
         GoRoute(
-          path: '/products/:shopId/add',
-          builder: (context, state) {
-            final shopId = int.parse(state.pathParameters['shopId']!);
-            return AddProductPage(shopId: shopId, categoryOptions: []);
-          },
-        ),
+            path: '/products/detail/:productId',
+            builder: (context, state) {
+              //final productId = int.parse(state.pathParameters['productId']!);
+              final extra = state.extra as Map<String, dynamic>;
+              final product = extra['product'] as Map<String, dynamic>;
+              final categoryOptions =
+                  extra['categories'] as List<Map<String, dynamic>>;
+              final unitOptions = extra['units'] as List<Map<String, dynamic>>;
+              return ProductDetailPage(
+                productId: product['id'],
+                productInitial: product,
+                categories: categoryOptions,
+                units: unitOptions,
+              );
+            }),
+        GoRoute(
+            path: '/products/:shopId/add',
+            builder: (context, state) {
+              final shopId = int.parse(state.pathParameters['shopId']!);
+              final extra = state.extra as Map<String, dynamic>;
+              final categoryOptions =
+                  extra['categories'] as List<Map<String, dynamic>>;
+              final unitOptions = extra['units'] as List<Map<String, dynamic>>;
+              return ProductAddPage(
+                categoryOptions: categoryOptions,
+                unitOptions: unitOptions,
+                shopId: shopId,
+              );
+            }),
+
+        GoRoute(
+            path: '/products/detail/:productId/edit',
+            builder: (context, state) {
+              //final productId = int.parse(state.pathParameters['productId']!);
+              final extra = state.extra as Map<String, dynamic>;
+              final product = extra['product'] as Map<String, dynamic>;
+              final categoryOptions =
+                  extra['categories'] as List<Map<String, dynamic>>;
+              final unitOptions = extra['units'] as List<Map<String, dynamic>>;
+              // Pass full product data
+              return ProductEditPage(
+                product: product,
+                categoryOptions: categoryOptions,
+                unitOptions: unitOptions,
+              );
+            }),
+
+        // GoRoute(
+        //   path: '/products/:shopId/add',
+        //   builder: (context, state) {
+        //     final shopId = int.parse(state.pathParameters['shopId']!);
+        //     return AddEditProductPage();
+        //   },
+        // ),
         // GoRoute(
         //   path: '/products/:shopId/edit/:productId',
         //   builder: (context, state) {

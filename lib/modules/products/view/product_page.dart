@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/product_bloc.dart';
 import '../data/product_repository.dart';
-import 'product_widgets/show_add_product_dialog.dart';
-import 'product_widgets/show_edit_product_dialog.dart';
 
 class ProductPage extends StatelessWidget {
   final int shopId;
@@ -15,7 +13,6 @@ class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Fetch categories
-    List<dynamic> categories = [];
 
     return BlocProvider(
       create: (context) {
@@ -24,13 +21,17 @@ class ProductPage extends StatelessWidget {
       },
       child: BlocListener<ProductBloc, ProductState>(
         listener: (context, state) {
-          if (state is CategoryLoaded) {
-            categories = state.categories;
-          }
-
           if (state is ProductError) {
-            ShowAddProductDialog(shopId: shopId, categoryOptions: categories)
-                .showErrorDialog(context, state.message);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          } else if (state is ProductLoading) {
+            // Show loading indicator
+          } else if (state is ProductLoaded) {
+            // Handle product loaded state
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Products loaded successfully!')),
+            );
           } else if (state is ProductAdded) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Product added successfully!')),
@@ -64,18 +65,29 @@ class ProductPage extends StatelessWidget {
                         children: [
                           IconButton(
                             icon: Icon(Icons.edit),
-                            onPressed: () =>
-                                ShowEditProductDialog(shopId, product)
-                                    .show(context),
+                            onPressed: () => {},
                           ),
                           IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => context
-                                .read<ProductBloc>()
-                                .add(DeleteProduct(product['id'], shopId)),
+                            onPressed: () => {},
                           ),
                         ],
                       ),
+                      onTap: () async {
+                        final result = await context
+                            .push('/products/detail/${product['id']}', extra: {
+                          'product': product,
+                          'categories': state.categories,
+                          'units': state.units,
+                        });
+
+                        if (result == true) {
+                          context
+                              .read<ProductBloc>()
+                              .add(FetchProducts(shopId));
+                        }
+                        // Navigate to product detail page
+                      },
                     );
                   },
                 );
@@ -87,14 +99,25 @@ class ProductPage extends StatelessWidget {
           ),
           floatingActionButton:
               BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
-            return FloatingActionButton(
-              onPressed: () => 
-               context.push('/products/$shopId/add'), // Navigate to add product page
-              // AddProductPage(
-              //         categoryOptions: categories, shopId: shopId)
-              //     .show(context),
-              child: Icon(Icons.add),
-            );
+            if (state is ProductLoaded) {
+              return FloatingActionButton(
+                onPressed: () async {
+                  final result =
+                      await context.push('/products/$shopId/add', extra: {
+                    //'shopId': shopId,
+                    'categories': state.categories,
+                    'units': state.units,
+                  });
+
+                  if (result == true) {
+                    context.read<ProductBloc>().add(FetchProducts(shopId));
+                  }
+                }, // Navigate to product detail page
+                child: Icon(Icons.add),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
           }),
         ),
       ),

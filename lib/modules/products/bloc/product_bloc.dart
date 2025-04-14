@@ -14,6 +14,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<EditProduct>(_onEditProduct);
     on<DeleteProduct>(_onDeleteProduct);
     on<FetchCategories>(_onFetchCategories);
+    on<AddCategory>(_onAddCategory);
+    on<EditCategory>(_onEditCategory);
+    on<DeleteCategory>(_onDeleteCategory);
+    on<FetchUnits>(_onFetchUnits);
+    on<EditUnit>(_onEditUnit);
+    on<DeleteUnit>(_onDeleteUnit);
+
   }
 
   Future<void> _onFetchProducts(
@@ -21,8 +28,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
     try {
       final products = await productRepository.fetchProducts(event.shopId);
+      final categories = await productRepository.fetchCategories(event.shopId);
+      final units = await productRepository.fetchUnits(event.shopId);
       //add(FetchCategories(event.shopId));
-      emit(ProductLoaded(products));
+      emit(ProductLoaded(products,categories, units));
     } catch (e) {
       emit(ProductError('Failed to load products: ${e.toString()}'));
     }
@@ -54,10 +63,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           event.productId,
           event.name,
           event.description,
+          event.categoryId,
           event.price,
           event.costPrice,
           event.stockQuantity,
-          event.unit);
+          event.unitId);
       add(FetchProducts(event.shopId));
       emit(ProductUpdated());
     } catch (e) {
@@ -79,10 +89,82 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onFetchCategories(
       FetchCategories event, Emitter<ProductState> emit) async {
     try {
+      emit(ProductLoading());
       final categories = await productRepository.fetchCategories(event.shopId);
       emit(CategoryLoaded(categories));
     } catch (e) {
       emit(ProductError('Failed to load categories: ${e.toString()}'));
     }
   }
+
+  Future<void> _onAddCategory(
+      AddCategory event, Emitter<ProductState> emit) async {
+    try {
+      await productRepository.addCategory(event.shopId, event.name);
+      add(FetchCategories(event.shopId));
+      emit(ProductAdded());
+    } catch (e) {
+      emit(ProductError('Failed to add category: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onEditCategory(
+      EditCategory event, Emitter<ProductState> emit) async {
+    try {
+      await productRepository.editCategory(event.categoryId, event.name);
+      add(FetchCategories(event.shopId));
+      emit(CategoryEdited());
+    } catch (e) {
+      emit(ProductError('Failed to edit category: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onDeleteCategory(
+      DeleteCategory event, Emitter<ProductState> emit) async {
+    try {
+      await productRepository.deleteCategory(event.categoryId);
+      add(FetchCategories(event.shopId));
+      emit(CategoryDeleted());
+    } catch (e) {
+      emit(ProductError('Failed to delete category: ${e.toString()}'));
+    }
+  }
+
+  // Fetch units
+
+  Future<void> _onFetchUnits(
+      FetchUnits event, Emitter<ProductState> emit) async {
+    try {
+      emit(ProductLoading());
+      final units = await productRepository.fetchUnits(event.shopId);
+      emit(UnitLoaded(units));
+    } catch (e) {
+      emit(ProductError('Failed to load units: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onEditUnit(EditUnit event, Emitter<ProductState> emit) async {
+    try {
+      await productRepository.editUnit(
+        event.unitId,
+        event.name,
+      );
+      add(FetchUnits(event.shopId));
+      emit(UnitEdited());
+    } catch (e) {
+      emit(ProductError('Failed to edit unit: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onDeleteUnit(
+      DeleteUnit event, Emitter<ProductState> emit) async {
+    try {
+      await productRepository.deleteUnit(event.unitId);
+      add(FetchUnits(event.shopId));
+      emit(UnitDeleted());
+    } catch (e) {
+      emit(ProductError('Failed to delete unit: ${e.toString()}'));
+    }
+  }
+
 }
