@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supos_v3/modules/products/model/product_model.dart';
 import 'package:supos_v3/modules/shops/view/shop_page.dart';
 import '../app/home.dart';
 import '../modules/auth/bloc/auth_bloc.dart';
@@ -59,12 +60,12 @@ class MyApp extends StatelessWidget {
             builder: (context, state) {
               //final productId = int.parse(state.pathParameters['productId']!);
               final extra = state.extra as Map<String, dynamic>;
-              final product = extra['product'] as Map<String, dynamic>;
+              final product = extra['product'] as Product;
               final categoryOptions =
-                  extra['categories'] as List<Map<String, dynamic>>;
-              final unitOptions = extra['units'] as List<Map<String, dynamic>>;
+                  extra['categories'] as List<ProductCategory>;
+              final unitOptions = extra['units'] as List<ProductUnit>;
               return ProductDetailPage(
-                productId: product['id'],
+                productId: product.id,
                 productInitial: product,
                 categories: categoryOptions,
                 units: unitOptions,
@@ -77,11 +78,11 @@ class MyApp extends StatelessWidget {
               final shopId = int.parse(state.pathParameters['shopId']!);
               final extra = state.extra as Map<String, dynamic>;
               final categoryOptions =
-                  extra['categories'] as List<Map<String, dynamic>>;
-              final unitOptions = extra['units'] as List<Map<String, dynamic>>;
+                  extra['categories'] as List<ProductCategory>;
+              final unitOptions = extra['units'] as List<ProductUnit>;
               return ProductAddPage(
-                categoryOptions: categoryOptions,
-                unitOptions: unitOptions,
+                categories: categoryOptions,
+                units: unitOptions,
                 shopId: shopId,
               );
             }),
@@ -91,15 +92,15 @@ class MyApp extends StatelessWidget {
             builder: (context, state) {
               //final productId = int.parse(state.pathParameters['productId']!);
               final extra = state.extra as Map<String, dynamic>;
-              final product = extra['product'] as Map<String, dynamic>;
+              final product = extra['product'] as Product;
               final categoryOptions =
-                  extra['categories'] as List<Map<String, dynamic>>;
-              final unitOptions = extra['units'] as List<Map<String, dynamic>>;
+                  extra['categories'] as List<ProductCategory>;
+              final unitOptions = extra['units'] as List<ProductUnit>;
               // Pass full product data
               return ProductEditPage(
                 product: product,
-                categoryOptions: categoryOptions,
-                unitOptions: unitOptions,
+                categories: categoryOptions,
+                units: unitOptions,
               );
             }),
 

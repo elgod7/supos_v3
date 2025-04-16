@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/product_bloc.dart';
 import '../data/product_repository.dart';
+import '../model/product_model.dart';
 
 class ProductPage extends StatelessWidget {
   final int shopId;
@@ -30,10 +31,6 @@ class ProductPage extends StatelessWidget {
               } else if (state is ProductLoading) {
                 // Show loading indicator
               } else if (state is ProductLoaded) {
-                // Handle product loaded state
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Products loaded successfully!')),
-                );
               } else if (state is ProductAdded) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Product added successfully!')),
@@ -79,10 +76,10 @@ Widget _buildProductList(BuildContext context, ProductLoaded state, shopName) {
   return ListView.builder(
     itemCount: state.products.length,
     itemBuilder: (context, index) {
-      final product = state.products[index];
+      final Product product = state.products[index];
       return ListTile(
-        title: Text(product['name']),
-        subtitle: Text('Stock: ${product['stock_quantity']}'),
+        title: Text(product.name),
+        subtitle: Text('Stock: ${product.stockQuantity}'),
         // trailing: IconButton(
         //   icon: Icon(Icons.delete),
         //   onPressed: () {
@@ -90,7 +87,7 @@ Widget _buildProductList(BuildContext context, ProductLoaded state, shopName) {
         //   },
         // ),
         onTap: () => _navigateToProductDetail(
-            context, product, state, product['shop_id'], shopName),
+            context, product, state, product.shopId, shopName),
       );
     },
   );
@@ -117,14 +114,9 @@ Widget _buildFloatingActionButton(BuildContext context, int shopId, state) {
 //   }
 // }
 
-void _navigateToProductDetail(
-    BuildContext context,
-    Map<String, dynamic> product,
-    ProductLoaded state,
-    int shopId,
-    String shopName) async {
-  final result =
-      await context.push('/products/detail/${product['id']}', extra: {
+void _navigateToProductDetail(BuildContext context, Product product,
+    ProductLoaded state, int shopId, String shopName) async {
+  final result = await context.push('/products/detail/${product.id}', extra: {
     'product': product,
     'categories': state.categories,
     'units': state.units,

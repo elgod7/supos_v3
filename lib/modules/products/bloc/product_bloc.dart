@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:supos_v3/modules/products/model/product_model.dart';
 import '../data/product_repository.dart';
 
 part 'product_event.dart';
@@ -41,15 +42,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       AddProduct event, Emitter<ProductState> emit) async {
     try {
       await productRepository.addProduct(
-          event.shopId,
-          event.name,
-          event.description,
-          event.categoryId,
-          event.price,
-          event.costPrice,
-          event.stockQuantity,
-          event.unit);
-      add(FetchProducts(event.shopId)); // Refresh product list
+          event.product);
+      add(FetchProducts(event.product.shopId)); // Refresh product list
       emit(ProductAdded());
     } catch (e) {
       emit(ProductError('Failed to add product: ${e.toString()}'));
@@ -60,15 +54,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       EditProduct event, Emitter<ProductState> emit) async {
     try {
       await productRepository.editProduct(
-          event.productId,
-          event.name,
-          event.description,
-          event.categoryId,
-          event.price,
-          event.costPrice,
-          event.stockQuantity,
-          event.unitId);
-      add(FetchProducts(event.shopId));
+          event.product);
+      add(FetchProducts(event.product.shopId));
       emit(ProductUpdated());
     } catch (e) {
       emit(ProductError('Failed to edit product: ${e.toString()}'));
@@ -100,8 +87,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onAddCategory(
       AddCategory event, Emitter<ProductState> emit) async {
     try {
-      await productRepository.addCategory(event.shopId, event.name);
-      add(FetchCategories(event.shopId));
+      await productRepository.addCategory(event.category);
+      add(FetchCategories(event.category.shopId));
       emit(ProductAdded());
     } catch (e) {
       emit(ProductError('Failed to add category: ${e.toString()}'));
@@ -111,8 +98,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onEditCategory(
       EditCategory event, Emitter<ProductState> emit) async {
     try {
-      await productRepository.editCategory(event.categoryId, event.name);
-      add(FetchCategories(event.shopId));
+      await productRepository.editCategory(event.category);
+      add(FetchCategories(event.category.shopId));
       emit(CategoryEdited());
     } catch (e) {
       emit(ProductError('Failed to edit category: ${e.toString()}'));
@@ -142,14 +129,23 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductError('Failed to load units: ${e.toString()}'));
     }
   }
+  Future<void> _onAddUnit(
+    AddUnit event,
+    Emitter<ProductState> emit,
+  ) async {
+    try {
+      await productRepository.addUnit(event.unit);
+      add(FetchUnits(event.unit.shopId));
+    } catch (e) {
+      emit(ProductError('Failed to add unit: ${e.toString()}'));
+    }
+  }
 
   Future<void> _onEditUnit(EditUnit event, Emitter<ProductState> emit) async {
     try {
       await productRepository.editUnit(
-        event.unitId,
-        event.name,
-      );
-      add(FetchUnits(event.shopId));
+        event.unit);
+      add(FetchUnits(event.unit.shopId));
       emit(UnitEdited());
     } catch (e) {
       emit(ProductError('Failed to edit unit: ${e.toString()}'));

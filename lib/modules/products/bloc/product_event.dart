@@ -15,66 +15,21 @@ class FetchProducts extends ProductEvent {
 }
 
 class AddProduct extends ProductEvent {
-  final int shopId;
-  final String name;
-  final String description;
-  final int categoryId;
-  final double price;
-  final double costPrice;
-  final double stockQuantity;
-  final int unit;
+  final Product product;
 
-  AddProduct(this.shopId, this.name, this.description, this.categoryId,
-      this.price, this.costPrice, this.stockQuantity, this.unit);
+  AddProduct(this.product);
 
   @override
-  List<Object> get props => [
-        shopId,
-        name,
-        description,
-        categoryId,
-        price,
-        costPrice,
-        stockQuantity,
-        unit
-      ];
+  List<Object> get props => [product];
 }
 
 class EditProduct extends ProductEvent {
-  final int productId;
-  final int shopId;
-  final int categoryId;
-  final String name;
-  final String description;
-  final double price;
-  final double costPrice;
-  final double stockQuantity;
-  final int unitId;
+  final Product product;
 
-  EditProduct(
-    this.productId,
-    this.shopId,
-    this.name,
-    this.description,
-    this.categoryId,
-    this.price,
-    this.costPrice,
-    this.stockQuantity,
-    this.unitId,
-  );
+  EditProduct(this.product);
 
   @override
-  List<Object> get props => [
-        productId,
-        shopId,
-        name,
-        description,
-        categoryId,
-        price,
-        costPrice,
-        stockQuantity,
-        unitId
-      ];
+  List<Object> get props => [product];
 }
 
 class DeleteProduct extends ProductEvent {
@@ -96,15 +51,22 @@ class FetchCategories extends ProductEvent {
   List<Object> get props => [shopId];
 }
 
-class EditCategory extends ProductEvent {
-  final int categoryId;
-  final int shopId;
-  final String name;
+class AddCategory extends ProductEvent {
+  final ProductCategory category;
 
-  EditCategory(this.categoryId, this.name, this.shopId);
+  AddCategory(this.category);
 
   @override
-  List<Object> get props => [categoryId, name, shopId];
+  List<Object> get props => [category];
+}
+
+class EditCategory extends ProductEvent {
+  final ProductCategory category;
+
+  EditCategory(this.category);
+
+  @override
+  List<Object> get props => [category];
 }
 
 class DeleteCategory extends ProductEvent {
@@ -117,16 +79,6 @@ class DeleteCategory extends ProductEvent {
   List<Object> get props => [categoryId, shopId];
 }
 
-class AddCategory extends ProductEvent {
-  final int shopId;
-  final String name;
-
-  AddCategory(this.shopId, this.name);
-
-  @override
-  List<Object> get props => [shopId, name];
-}
-
 class FetchUnits extends ProductEvent {
   final int shopId;
 
@@ -136,15 +88,22 @@ class FetchUnits extends ProductEvent {
   List<Object> get props => [shopId];
 }
 
-class EditUnit extends ProductEvent {
-  final int unitId;
-  final String name;
-  final int shopId;
+class AddUnit extends ProductEvent {
+  final ProductUnit unit;
 
-  EditUnit(this.unitId, this.name, this.shopId);
+  AddUnit(this.unit);
 
   @override
-  List<Object> get props => [unitId, name, shopId];
+  List<Object> get props => [unit];
+}
+
+class EditUnit extends ProductEvent {
+  final ProductUnit unit;
+
+  EditUnit(this.unit);
+
+  @override
+  List<Object> get props => [unit];
 }
 
 class DeleteUnit extends ProductEvent {
@@ -155,14 +114,4 @@ class DeleteUnit extends ProductEvent {
 
   @override
   List<Object> get props => [unitId, shopId];
-}
-
-class AddUnit extends ProductEvent {
-  final int shopId;
-  final String name;
-
-  AddUnit(this.shopId, this.name);
-
-  @override
-  List<Object> get props => [shopId, name];
 }

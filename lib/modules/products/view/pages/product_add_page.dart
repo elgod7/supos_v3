@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../bloc/product_bloc.dart';
+import '../../model/product_model.dart';
 
 class ProductAddPage extends StatefulWidget {
-  //final Map<String, dynamic> product;
   final int shopId;
-  final List<Map<String, dynamic>> categoryOptions;
-  final List<Map<String, dynamic>> unitOptions;
+  final List<ProductCategory> categories;
+  final List<ProductUnit> units;
 
   const ProductAddPage({
-    //required this.product,
-    required this.categoryOptions,
     super.key,
-    required this.unitOptions,
+    required this.categories,
+    required this.units,
     required this.shopId,
   });
 
@@ -24,138 +23,189 @@ class ProductAddPage extends StatefulWidget {
 class _ProductAddPageState extends State<ProductAddPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController nameController;
-  late TextEditingController descriptionController;
-  late TextEditingController priceController;
-  late TextEditingController costPriceController;
-  late TextEditingController stockController;
-  //late TextEditingController unitController;
+  late TextEditingController _nameController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _priceController;
+  late TextEditingController _costPriceController;
+  late TextEditingController _stockController;
 
-  int? selectedCategoryId;
-  int? selectedUnitId;
+  int? _selectedCategoryId;
+  int? _selectedUnitId;
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController();
-    descriptionController = TextEditingController();
-    priceController = TextEditingController();
-    costPriceController = TextEditingController();
-    stockController = TextEditingController();
-    // selectedUnitId = widget.product['unit_id'];
-    // selectedCategoryId = widget.product['category_id'];
+    _nameController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _priceController = TextEditingController();
+    _costPriceController = TextEditingController();
+    _stockController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _priceController.dispose();
+    _costPriceController.dispose();
+    _stockController.dispose();
+    super.dispose();
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    final shopId = widget.shopId;
-    //final productId = widget.product['id'];
+    if (_selectedCategoryId == null || _selectedUnitId == null) return;
 
-    final addedProduct = AddProduct(
-      shopId,
-      nameController.text.trim(),
-      descriptionController.text.trim(),
-      selectedCategoryId!,
-      double.parse(priceController.text),
-      double.parse(costPriceController.text),
-      double.parse(stockController.text),
-      selectedUnitId!,
+    final product = Product(
+      id: 0, // Will be assigned by database
+      shopId: widget.shopId,
+      name: _nameController.text.trim(),
+      description: _descriptionController.text.trim(),
+      categoryId: _selectedCategoryId!,
+      categoryName: widget.categories
+          .firstWhere((c) => c.id == _selectedCategoryId)
+          .name,
+      price: double.parse(_priceController.text),
+      costPrice: double.parse(_costPriceController.text),
+      stockQuantity: double.parse(_stockController.text),
+      unitId: _selectedUnitId!,
+      unitName: widget.units.firstWhere((u) => u.id == _selectedUnitId).name,
     );
 
-    context.read<ProductBloc>().add(addedProduct);
+    context.read<ProductBloc>().add(AddProduct(product));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Add Product')),
-      body: BlocListener<ProductBloc, ProductState>(
+      body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
           if (state is ProductAdded) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('✅ Product Added')),
+              const SnackBar(content: Text('✅ Product added successfully')),
             );
-          } else if (state is ProductLoaded) {
-            Navigator.pop(context, true); // Navigate back to the previous page
-          } else if (state is ProductLoading) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Loading...')),
-            );
+            context.pop(true);
           } else if (state is ProductError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(content: Text('Error: ${state.message}')),
             );
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: 'Product Name'),
-                  validator: (value) => value!.isEmpty ? 'Required' : null,
-                ),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
-                ),
-                DropdownButtonFormField<int>(
-                  value: selectedCategoryId,
-                  decoration: const InputDecoration(labelText: 'Category'),
-                  items: widget.categoryOptions.map((category) {
-                    final int id = category['id'];
-                    final String name = category['name'];
-                    return DropdownMenuItem<int>(
-                      value: id,
-                      child: Text(name),
-                    );
-                  }).toList(),
-                  onChanged: (val) => setState(() => selectedCategoryId = val),
-                  validator: (val) => val == null ? 'Select category' : null,
-                ),
-                TextFormField(
-                  controller: priceController,
-                  decoration: InputDecoration(labelText: 'Selling Price'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextFormField(
-                  controller: costPriceController,
-                  decoration: InputDecoration(labelText: 'Cost Price'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextFormField(
-                  controller: stockController,
-                  decoration: InputDecoration(labelText: 'Stock Quantity'),
-                  keyboardType: TextInputType.number,
-                ),
-                DropdownButtonFormField<int>(
-                  value: selectedUnitId,
-                  decoration: const InputDecoration(labelText: 'Unit'),
-                  items: widget.unitOptions.map((unit) {
-                    final int id = unit['id'];
-                    final String name = unit['name'];
-                    return DropdownMenuItem<int>(
-                      value: id,
-                      child: Text(name),
-                    );
-                  }).toList(),
-                  onChanged: (val) => setState(() => selectedUnitId = val),
-                  validator: (val) => val == null ? 'Select Unit' : null,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: _submit,
-                  icon: Icon(Icons.save),
-                  label: Text('Save'),
-                ),
-                //Text('${widget.unitOptions}')
-              ],
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Product Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value?.isEmpty ?? true ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<int>(
+                    value: _selectedCategoryId,
+                    decoration: const InputDecoration(
+                      labelText: 'Category',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: widget.categories.map((category) {
+                      return DropdownMenuItem<int>(
+                        value: category.id,
+                        child: Text(category.name),
+                      );
+                    }).toList(),
+                    onChanged: (val) => setState(() => _selectedCategoryId = val),
+                    validator: (val) => val == null ? 'Select category' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _priceController,
+                    decoration: const InputDecoration(
+                      labelText: 'Selling Price',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) return 'Required';
+                      if (double.tryParse(value!) == null) return 'Invalid number';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _costPriceController,
+                    decoration: const InputDecoration(
+                      labelText: 'Cost Price',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) return 'Required';
+                      if (double.tryParse(value!) == null) return 'Invalid number';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _stockController,
+                    decoration: const InputDecoration(
+                      labelText: 'Stock Quantity',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) return 'Required';
+                      if (double.tryParse(value!) == null) return 'Invalid number';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<int>(
+                    value: _selectedUnitId,
+                    decoration: const InputDecoration(
+                      labelText: 'Unit',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: widget.units.map((unit) {
+                      return DropdownMenuItem<int>(
+                        value: unit.id,
+                        child: Text(unit.name),
+                      );
+                    }).toList(),
+                    onChanged: (val) => setState(() => _selectedUnitId = val),
+                    validator: (val) => val == null ? 'Select unit' : null,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: state is ProductLoading ? null : _submit,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: state is ProductLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('Save Product'),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
