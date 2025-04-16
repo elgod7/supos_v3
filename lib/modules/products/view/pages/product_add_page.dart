@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../bloc/product_bloc.dart';
 
 class ProductAddPage extends StatefulWidget {
@@ -74,7 +75,12 @@ class _ProductAddPageState extends State<ProductAddPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('✅ Product Added')),
             );
-            Navigator.pop(context, true);
+          } else if (state is ProductLoaded) {
+            Navigator.pop(context, true); // Navigate back to the previous page
+          } else if (state is ProductLoading) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Loading...')),
+            );
           } else if (state is ProductError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
@@ -145,7 +151,7 @@ class _ProductAddPageState extends State<ProductAddPage> {
                   icon: Icon(Icons.save),
                   label: Text('Save'),
                 ),
-                Text('${widget.unitOptions}')
+                //Text('${widget.unitOptions}')
               ],
             ),
           ),

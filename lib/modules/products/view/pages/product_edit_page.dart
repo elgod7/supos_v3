@@ -65,6 +65,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
 
     context.read<ProductBloc>().add(updated);
+    context.read<ProductBloc>().add(FetchProducts(shopId));
   }
 
   @override

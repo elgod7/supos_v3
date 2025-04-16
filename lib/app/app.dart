@@ -68,6 +68,7 @@ class MyApp extends StatelessWidget {
                 productInitial: product,
                 categories: categoryOptions,
                 units: unitOptions,
+                shopName: extra['shopName'] as String,
               );
             }),
         GoRoute(
