@@ -21,7 +21,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<FetchUnits>(_onFetchUnits);
     on<EditUnit>(_onEditUnit);
     on<DeleteUnit>(_onDeleteUnit);
-
   }
 
   Future<void> _onFetchProducts(
@@ -32,7 +31,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       final categories = await productRepository.fetchCategories(event.shopId);
       final units = await productRepository.fetchUnits(event.shopId);
       //add(FetchCategories(event.shopId));
-      emit(ProductLoaded(products,categories, units));
+      emit(ProductLoaded(products, categories, units));
     } catch (e) {
       emit(ProductError('Failed to load products: ${e.toString()}'));
     }
@@ -41,8 +40,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onAddProduct(
       AddProduct event, Emitter<ProductState> emit) async {
     try {
-      await productRepository.addProduct(
-          event.product);
+      await productRepository.addProduct(event.product);
       add(FetchProducts(event.product.shopId)); // Refresh product list
       emit(ProductAdded());
     } catch (e) {
@@ -53,8 +51,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onEditProduct(
       EditProduct event, Emitter<ProductState> emit) async {
     try {
-      await productRepository.editProduct(
-          event.product);
+      await productRepository.editProduct(event.product);
       add(FetchProducts(event.product.shopId));
       emit(ProductUpdated());
     } catch (e) {
@@ -129,6 +126,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductError('Failed to load units: ${e.toString()}'));
     }
   }
+
   Future<void> _onAddUnit(
     AddUnit event,
     Emitter<ProductState> emit,
@@ -143,8 +141,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   Future<void> _onEditUnit(EditUnit event, Emitter<ProductState> emit) async {
     try {
-      await productRepository.editUnit(
-        event.unit);
+      await productRepository.editUnit(event.unit);
       add(FetchUnits(event.unit.shopId));
       emit(UnitEdited());
     } catch (e) {
@@ -162,5 +159,4 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductError('Failed to delete unit: ${e.toString()}'));
     }
   }
-
 }

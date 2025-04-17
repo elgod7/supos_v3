@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../data/shop_repository.dart';
+import '../view/model/shop_model.dart';
 
 part 'shop_event.dart';
 part 'shop_state.dart';
@@ -36,7 +37,7 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     emit(ShopLoading()); // Show loading state while adding the shop
     try {
       await shopRepository.addShop(
-          event.name, event.description, event.location);
+          event.shop);
       // final updatedShops =
       //     await shopRepository.fetchUserShops(); // Fetch updated shop list
       add(FetchShops()); // Refresh shop list
@@ -49,7 +50,7 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
   Future<void> _onEditShop(EditShop event, Emitter<ShopState> emit) async {
     try {
       await shopRepository.editShop(
-          event.shopId, event.name, event.description, event.location);
+          event.shop);
       add(FetchShops());
     } catch (e) {
       emit(ShopError('Failed to edit shop: ${e.toString()}'));

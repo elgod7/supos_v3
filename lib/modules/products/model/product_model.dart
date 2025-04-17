@@ -11,7 +11,7 @@ class Product {
   final double stockQuantity;
   final int unitId;
   final String unitName;
-  final List<String> imageUrls;
+  //final List<String> imageUrls;
 
   Product({
     required this.id,
@@ -25,7 +25,7 @@ class Product {
     required this.stockQuantity,
     required this.unitId,
     required this.unitName,
-    this.imageUrls = const [],
+    // this.imageUrls = const [],
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -35,13 +35,15 @@ class Product {
       name: json['name'] as String,
       description: json['description'] as String,
       categoryId: json['category_id'] as int,
-      categoryName: (json['product_categories'] as Map<String, dynamic>)['name'] as String,
+      categoryName: (json['product_categories'] as Map<String, dynamic>)['name']
+          as String,
       price: (json['price'] as num).toDouble(),
       costPrice: (json['cost_price'] as num).toDouble(),
       stockQuantity: (json['stock_quantity'] as num).toDouble(),
       unitId: json['unit_id'] as int,
-      unitName: (json['product_units'] as Map<String, dynamic>)['name'] as String,
-      imageUrls: (json['image_urls'] as List<dynamic>?)?.cast<String>() ?? [],
+      unitName:
+          (json['product_units'] as Map<String, dynamic>)['name'] as String,
+      //imageUrls: (json['image_urls'] as List<dynamic>?)?.cast<String>() ?? [],
     );
   }
 
@@ -56,7 +58,7 @@ class Product {
       'cost_price': costPrice,
       'stock_quantity': stockQuantity,
       'unit_id': unitId,
-     'image_urls': imageUrls, // Include image URLs in JSON
+      //'image_urls': imageUrls, // Include image URLs in JSON
     };
   }
 }

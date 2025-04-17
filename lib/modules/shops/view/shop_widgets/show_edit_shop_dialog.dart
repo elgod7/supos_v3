@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supos_v3/modules/shops/view/model/shop_model.dart';
 import 'package:supos_v3/utils/shared_components/alert_dialog/show_dialog.dart';
 
 import '../../bloc/shop_bloc.dart';
@@ -26,14 +27,18 @@ class ShowEditShopDialog {
       controllers: [nameController, descriptionController, locationController],
       labels: ['Shop Name', 'Description', 'Location'],
       onEvent: (pageContext) {
-        final name = nameController.text;
-        final description = descriptionController.text;
-        final location = locationController.text;
-        final id = shopId;
+        final Shop shop = Shop(
+          id: shopId,
+          name: nameController.text,
+          description: descriptionController.text,
+          location: locationController.text,
+        );
+        if (shop.name.isEmpty) {
+          ShowFormDialog.showErrorDialog(context, 'Shop name cannot be empty!');
+          return;
+        }
 
-        pageContext
-            .read<ShopBloc>()
-            .add(EditShop(id, name, description, location));
+        pageContext.read<ShopBloc>().add(EditShop(shop));
       },
     ).show(context);
   }

@@ -8,26 +8,21 @@ abstract class ShopEvent extends Equatable {
 class FetchShops extends ShopEvent {}
 
 class AddShop extends ShopEvent {
-  final String name;
-  final String description;
-  final String location;
+  final Shop shop;
 
-  AddShop(this.name, this.description, this.location);
+  AddShop(this.shop);
 
   @override
-  List<Object> get props => [name, description, location];
+  List<Object> get props => [shop];
 }
 
 class EditShop extends ShopEvent {
-  final int shopId;
-  final String name;
-  final String description;
-  final String location;
+  final Shop shop;
 
-  EditShop(this.shopId, this.name, this.description, this.location);
+  EditShop(this.shop);
 
   @override
-  List<Object> get props => [shopId, name, description, location];
+  List<Object> get props => [shop];
 }
 
 class DeleteShop extends ShopEvent {

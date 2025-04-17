@@ -1,5 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../view/model/shop_model.dart';
+
 class ShopRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
 
@@ -15,25 +17,21 @@ class ShopRepository {
       if (response.isEmpty) {
         return [];
       }
-      return response;
+      return (response as List<dynamic>).map((json) => UserShop.fromJson(json as Map<String, dynamic>)).toList();
     } catch (e) {
       throw Exception('An error occurred while fetching shops: $e');
     }
   }
 
   /// Add a shop and link it to the logged-in user with the 'owner' role
-  Future<void> addShop(String name, String description, String location) async {
+  Future<void> addShop(Shop shop) async {
     try {
       final userId = await _getUserId(); // Fetch user ID from public.users
 
       // Insert the new shop and get its ID
       final shopResponse = await _supabase
           .from('shops')
-          .insert({
-            'name': name,
-            'description': description,
-            'location': location,
-          })
+          .insert(shop.toJson())
           .select('id')
           .single();
 
@@ -58,22 +56,22 @@ class ShopRepository {
       throw Exception('An error occurred while adding the shop: $e');
     }
   }
- /// Listen for real-time updates in the shops table
+
+  /// Listen for real-time updates in the shops table
   Stream<List<dynamic>> listenToShops() {
     return _supabase
         .from('shops')
-        .stream(primaryKey: ['id'])
-        .map((event) => event);
+        .stream(primaryKey: ['id']).map((event) => event);
   }
 
   /// Edit a shop’s details
-  Future<void> editShop(int shopId, String name, String description, String location) async {
+  Future<void> editShop(Shop shop) async {
     try {
       await _supabase.from('shops').update({
-        'name': name,
-        'description': description,
-        'location': location,
-      }).eq('id', shopId);
+        'name': shop.name,
+        'description': shop.description,
+        'location': shop.location,
+      }).eq('id', shop.id);
     } catch (e) {
       throw Exception('Error editing shop: $e');
     }

@@ -4,6 +4,7 @@ import 'package:supos_v3/utils/helpers/form_validators.dart.dart';
 import 'package:supos_v3/utils/shared_components/alert_dialog/show_dialog.dart';
 
 import '../../bloc/shop_bloc.dart';
+import '../model/shop_model.dart';
 
 class ShowAddShopDialog {
   final TextEditingController nameController = TextEditingController();
@@ -24,11 +25,18 @@ class ShowAddShopDialog {
       labels: ['Shop Name', 'Description', 'Location'],
       validators: validators,
       onEvent: (pageContext) {
-        final name = nameController.text;
-        final description = descriptionController.text;
-        final location = locationController.text;
+        final Shop shop = Shop(
+          id: 0,
+          name: nameController.text,
+          description: descriptionController.text,
+          location: locationController.text,
+        );
+        if (shop.name.isEmpty) {
+          showErrorDialog(context, 'Shop name cannot be empty!');
+          return;
+        }
 
-        pageContext.read<ShopBloc>().add(AddShop(name, description, location));
+        pageContext.read<ShopBloc>().add(AddShop(shop));
       },
     ).show(context);
   }

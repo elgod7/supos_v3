@@ -1,9 +1,7 @@
-import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../model/product_model.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProductRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -70,42 +68,7 @@ class ProductRepository {
   //   }
   // }
 
-  Future<List<String>> uploadProductImages(
-      int productId, List<XFile> imageFiles) async {
-    final List<String> imageUrls = [];
-
-    for (final file in imageFiles) {
-      final fileExtension = file.name.split('.').last;
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
-      final filePath = '$productId/$fileName';
-
-      final fileBytes = await file.readAsBytes();
-
-      await _supabase.storage
-          .from(productImagesBucket)
-          .upload(filePath, fileBytes as File);
-
-      final imageUrl =
-          _supabase.storage.from(productImagesBucket).getPublicUrl(filePath);
-
-      imageUrls.add(imageUrl);
-    }
-
-    return imageUrls;
-  }
-
-  Future<void> deleteProductImage(String imageUrl) async {
-    try {
-      final path = imageUrl.split('/').last;
-      await _supabase.storage.from(productImagesBucket).remove([path]);
-    } catch (e) {
-      throw Exception('Error deleting image: $e');
-    }
-  }
-
-  // Update these methods to handle images
-
+  
   Future<List<dynamic>> fetchCategories(int shopId) async {
     try {
       final response = await _supabase

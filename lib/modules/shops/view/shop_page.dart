@@ -35,21 +35,20 @@ class ShopPage extends StatelessWidget {
                 return ListView.builder(
                   itemCount: state.shops.length,
                   itemBuilder: (context, index) {
-                    final shop = state.shops[index];
+                    final userShop = state.shops[index];
                     return ListTile(
-                      title: Text(
-                          '${shop['shops']['name']} (${shop['roles']['name']})'),
-                      subtitle:
-                          Text(shop['shops']['location'] ?? 'No location'),
-                      trailing: isOwner(shop['roles']['name'])
+                      title:
+                          Text('${userShop.shop.name} (${userShop.roleName})'),
+                      subtitle: Text(userShop.shop.location ?? 'No location'),
+                      trailing: isOwner(userShop.roleName)
                           ? Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () => ShowEditShopDialog(
-                                          shopId: shop['shops']['id'],
-                                          shop: shop['shops'])
+                                          shopId: userShop.shops.id,
+                                          shop: userShop.shop)
                                       .show(context),
                                 ),
                                 IconButton(
@@ -57,7 +56,7 @@ class ShopPage extends StatelessWidget {
                                   onPressed: () {
                                     context
                                         .read<ShopBloc>()
-                                        .add(DeleteShop(shop['shops']['id']));
+                                        .add(DeleteShop(userShop.shop.id));
                                   },
                                 ),
                               ],
@@ -77,7 +76,8 @@ class ShopPage extends StatelessWidget {
                             ),
                       onTap: () {
                         context.push(
-                            '/products/${shop['shops']['id']}?shopName=${shop['shops']['name']}');
+                          '/products/${userShop.shop.id}?shopName=${userShop.shop.name}',
+                        );
                       },
                     );
                   },
