@@ -47,7 +47,7 @@ class ShopPage extends StatelessWidget {
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () => ShowEditShopDialog(
-                                          shopId: userShop.shops.id,
+                                          shopId: userShop.shop.id,
                                           shop: userShop.shop)
                                       .show(context),
                                 ),

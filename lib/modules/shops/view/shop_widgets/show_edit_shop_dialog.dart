@@ -7,14 +7,14 @@ import '../../bloc/shop_bloc.dart';
 
 class ShowEditShopDialog {
   ShowEditShopDialog({required this.shopId, required this.shop}) {
-    nameController = TextEditingController(text: shop['name'] ?? '');
+    nameController = TextEditingController(text: shop.name);
     descriptionController =
-        TextEditingController(text: shop['description'] ?? '');
-    locationController = TextEditingController(text: shop['location'] ?? '');
+        TextEditingController(text: shop.description );
+    locationController = TextEditingController(text: shop.location);
   }
 
   final int shopId;
-  final Map<String, dynamic> shop;
+  final Shop shop;
 
   late final TextEditingController nameController;
   late final TextEditingController descriptionController;
