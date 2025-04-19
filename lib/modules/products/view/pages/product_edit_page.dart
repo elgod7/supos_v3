@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../images/view/widget/image_upload_widget.dart';
 import '../../bloc/product_bloc.dart';
 import '../../model/product_model.dart';
 
@@ -21,6 +22,8 @@ class ProductEditPage extends StatefulWidget {
 
 class _ProductEditPageState extends State<ProductEditPage> {
   final _formKey = GlobalKey<FormState>();
+
+  String? _imageUrl;
 
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
@@ -46,6 +49,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
     _selectedCategoryId = widget.product.categoryId;
     _selectedUnitId = widget.product.unitId;
+    _imageUrl = widget.product.imageUrl;
   }
 
   @override
@@ -74,6 +78,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       stockQuantity: double.parse(_stockController.text),
       unitId: _selectedUnitId,
       unitName: widget.units.firstWhere((u) => u.id == _selectedUnitId).name,
+      imageUrl: _imageUrl ?? '',
     );
 
     context.read<ProductBloc>().add(EditProduct(updatedProduct));
@@ -103,6 +108,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
               key: _formKey,
               child: ListView(
                 children: [
+                  // Image upload section
+                  ImageUploader(
+                    folder: 'products',
+                    onUploaded: (url) => setState(() => _imageUrl = url),
+                    imageUrl: _imageUrl??'',
+                    isEdit: true,
+                  ),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(

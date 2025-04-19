@@ -11,7 +11,7 @@ class Product {
   final double stockQuantity;
   final int unitId;
   final String unitName;
-  //final List<String> imageUrls;
+  final String imageUrl;
 
   Product({
     required this.id,
@@ -25,6 +25,7 @@ class Product {
     required this.stockQuantity,
     required this.unitId,
     required this.unitName,
+    required this.imageUrl,
     // this.imageUrls = const [],
   });
 
@@ -43,13 +44,14 @@ class Product {
       unitId: json['unit_id'] as int,
       unitName:
           (json['product_units'] as Map<String, dynamic>)['name'] as String,
+      imageUrl: json['image_url'] as String,
       //imageUrls: (json['image_urls'] as List<dynamic>?)?.cast<String>() ?? [],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      //'id': id,
       'shop_id': shopId,
       'name': name,
       'description': description,
@@ -58,6 +60,7 @@ class Product {
       'cost_price': costPrice,
       'stock_quantity': stockQuantity,
       'unit_id': unitId,
+      'image_url': imageUrl,
       //'image_urls': imageUrls, // Include image URLs in JSON
     };
   }

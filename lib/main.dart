@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supos_v3/core/supabase/supabase_service.dart';
 import 'package:supos_v3/modules/shops/bloc/shop_bloc.dart';
 import 'app/app.dart';
+import 'modules/images/data/image_service.dart';
 import 'modules/auth/bloc/auth_bloc.dart';
+import 'modules/images/bloc/image_bloc.dart';
 import 'modules/products/bloc/product_bloc.dart';
 import 'modules/products/data/product_repository.dart';
 import 'modules/shops/data/shop_repository.dart';
@@ -20,6 +22,9 @@ void main() async {
             AuthBloc()..add(AppStarted())), // Provide AuthBloc globally
     BlocProvider(create: (context) => ShopBloc(ShopRepository())),
     BlocProvider(create: (context) => ProductBloc(ProductRepository())),
+    BlocProvider(
+        create: (context) => ImageBloc(ImageService())
+          ) // Provide ImageBloc globally
 
     // BlocProvider(create: (context) => ShopBloc(ShopRepository()))
   ], child: MyApp()));

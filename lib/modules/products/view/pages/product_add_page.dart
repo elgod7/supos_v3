@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../images/view/widget/image_upload_widget.dart';
 import '../../bloc/product_bloc.dart';
 import '../../model/product_model.dart';
 
@@ -22,6 +23,8 @@ class ProductAddPage extends StatefulWidget {
 
 class _ProductAddPageState extends State<ProductAddPage> {
   final _formKey = GlobalKey<FormState>();
+  
+  String? _imageUrl;
 
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
@@ -62,14 +65,14 @@ class _ProductAddPageState extends State<ProductAddPage> {
       name: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
       categoryId: _selectedCategoryId!,
-      categoryName: widget.categories
-          .firstWhere((c) => c.id == _selectedCategoryId)
-          .name,
+      categoryName:
+          widget.categories.firstWhere((c) => c.id == _selectedCategoryId).name,
       price: double.parse(_priceController.text),
       costPrice: double.parse(_costPriceController.text),
       stockQuantity: double.parse(_stockController.text),
       unitId: _selectedUnitId!,
       unitName: widget.units.firstWhere((u) => u.id == _selectedUnitId).name,
+      imageUrl: _imageUrl ?? '', // Default to empty string if not set
     );
 
     context.read<ProductBloc>().add(AddProduct(product));
@@ -99,6 +102,13 @@ class _ProductAddPageState extends State<ProductAddPage> {
               key: _formKey,
               child: ListView(
                 children: [
+                  ImageUploader(
+                    folder: 'products',
+                    onUploaded: (url) => setState(() => _imageUrl = url),
+                    imageUrl: _imageUrl??'',
+                    isEdit: false,
+
+                  ),
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
@@ -130,7 +140,8 @@ class _ProductAddPageState extends State<ProductAddPage> {
                         child: Text(category.name),
                       );
                     }).toList(),
-                    onChanged: (val) => setState(() => _selectedCategoryId = val),
+                    onChanged: (val) =>
+                        setState(() => _selectedCategoryId = val),
                     validator: (val) => val == null ? 'Select category' : null,
                   ),
                   const SizedBox(height: 16),
@@ -143,7 +154,8 @@ class _ProductAddPageState extends State<ProductAddPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value?.isEmpty ?? true) return 'Required';
-                      if (double.tryParse(value!) == null) return 'Invalid number';
+                      if (double.tryParse(value!) == null)
+                        return 'Invalid number';
                       return null;
                     },
                   ),
@@ -157,7 +169,8 @@ class _ProductAddPageState extends State<ProductAddPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value?.isEmpty ?? true) return 'Required';
-                      if (double.tryParse(value!) == null) return 'Invalid number';
+                      if (double.tryParse(value!) == null)
+                        return 'Invalid number';
                       return null;
                     },
                   ),
@@ -171,7 +184,8 @@ class _ProductAddPageState extends State<ProductAddPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value?.isEmpty ?? true) return 'Required';
-                      if (double.tryParse(value!) == null) return 'Invalid number';
+                      if (double.tryParse(value!) == null)
+                        return 'Invalid number';
                       return null;
                     },
                   ),

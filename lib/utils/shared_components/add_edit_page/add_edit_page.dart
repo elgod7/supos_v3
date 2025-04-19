@@ -15,7 +15,7 @@ class AddEditPage extends StatelessWidget {
   final List<FormFieldValidator<String>>? validators;
   final bool isEdit;
 
-  AddEditPage({
+  AddEditPage({super.key, 
     required this.title,
     required this.controllers,
     required this.labels,

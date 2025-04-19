@@ -16,6 +16,10 @@ add_executable(${BINARY_NAME} WIN32
   "runner.exe.manifest"
 )
 
+
+add_definitions(-DUNICODE -D_UNICODE)
+set(CMAKE_CXX_STANDARD 17)
+
 # Apply the standard set of build settings. This can be removed for applications
 # that need different build settings.
 apply_standard_settings(${BINARY_NAME})

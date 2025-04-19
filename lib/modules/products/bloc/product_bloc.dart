@@ -19,6 +19,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<EditCategory>(_onEditCategory);
     on<DeleteCategory>(_onDeleteCategory);
     on<FetchUnits>(_onFetchUnits);
+    on<AddUnit>(_onAddUnit);
     on<EditUnit>(_onEditUnit);
     on<DeleteUnit>(_onDeleteUnit);
   }

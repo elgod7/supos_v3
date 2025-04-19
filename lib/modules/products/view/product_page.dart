@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supos_v3/modules/images/view/widget/safe_network_image.dart';
 import '../bloc/product_bloc.dart';
 import '../data/product_repository.dart';
 import '../model/product_model.dart';
@@ -78,6 +79,15 @@ Widget _buildProductList(BuildContext context, ProductLoaded state, shopName) {
     itemBuilder: (context, index) {
       final Product product = state.products[index];
       return ListTile(
+        leading: SizedBox(
+          width: 50,
+          height: 50,
+          child: ClipRect(
+            child: product.imageUrl.isNotEmpty
+                ? SafeNetworkImage(imageUrl: product.imageUrl)
+                : const Icon(Icons.image),
+          ),
+        ),
         title: Text(product.name),
         subtitle: Text('Stock: ${product.stockQuantity}'),
         // trailing: IconButton(

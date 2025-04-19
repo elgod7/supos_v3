@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supos_v3/modules/products/model/product_model.dart';
 
+import '../../../images/view/widget/safe_network_image.dart';
 import '../../bloc/product_bloc.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -110,14 +111,13 @@ class ProductDetailPage extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
-                      height: 220,
-                      color: Colors.grey[200],
-                      child:
-                          const Center(child: Icon(Icons.image_not_supported)),
-                    ),
+                        height: 220,
+                        color: Colors.grey[200],
+                        child: SafeNetworkImage(
+                          imageUrl: product.imageUrl,
+                        )),
                   ),
                   const SizedBox(height: 16),
-
                   // Product Name
                   Text(
                     product.name,
