@@ -1,1 +1,0 @@
-enum SizeOption { small, medium, large }
