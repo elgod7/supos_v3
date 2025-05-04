@@ -1,14 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supos_v3/core/supabase/supabase_service.dart';
-import 'package:supos_v3/modules/shops/bloc/shop_bloc.dart';
-import 'app/app.dart';
-import 'modules/images/data/image_service.dart';
-import 'modules/auth/bloc/auth_bloc.dart';
-import 'modules/images/bloc/image_bloc.dart';
-import 'modules/products/bloc/product_bloc.dart';
-import 'modules/products/data/product_repository.dart';
-import 'modules/shops/data/shop_repository.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:supos_v3/app/home_page.dart';
+import 'package:supos_v3/core/database/supabase_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,16 +8,21 @@ void main() async {
   // Initialize Supabase
   await SupabaseService.initializeSupabase();
 
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(
-        create: (context) =>
-            AuthBloc()..add(AppStarted())), // Provide AuthBloc globally
-    BlocProvider(create: (context) => ShopBloc(ShopRepository())),
-    BlocProvider(create: (context) => ProductBloc(ProductRepository())),
-    BlocProvider(
-        create: (context) => ImageBloc(ImageService())
-          ) // Provide ImageBloc globally
+  runApp(MyApp());
+}
 
-    // BlocProvider(create: (context) => ShopBloc(ShopRepository()))
-  ], child: MyApp()));
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShadcnApp(
+      title: 'My App',
+      home: HomePage(),
+      theme: ThemeData(
+        colorScheme: ColorSchemes.lightZinc(),
+        radius: 0.5,
+      ),
+    );
+  }
 }
